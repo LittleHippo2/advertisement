@@ -1,0 +1,128 @@
+*{
+    border-radius:10px;
+}
+
+input{
+    height: 40px;
+    margin: 10px;
+
+}
+
+input[type="button"]{
+    letter-spacing:2px;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.head{
+    width: auto;
+    height: 100px;
+    background: #ffffff;
+    display:flex;
+}
+.title{
+    margin-left: 25%;
+    align-self:center;
+}
+.layui-row{
+    background-color: #F0F0F0;
+}
+
+.body{
+    background-color: #ffffff;
+    margin-top: 20px;
+    height: 100%;
+}
+
+.http{
+    margin: 20px;
+    border: 2px solid #F0F0F0;
+}
+
+.body-param{
+    margin: 10px;
+}
+
+#body-select{
+    height: 40px;
+    width: 10%;
+    align-content: center;
+    padding-left: 10px;
+}
+
+#body-url{
+    height: 40px;
+    width: 65%;
+    font-size: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+#body-button{
+    height: 40px;
+    width: 15%;
+    background-color: #449D44;
+    color: #ffffff;
+}
+
+
+table{
+    margin: 10px;
+    width: 98%;
+    font-size: 20px;
+}
+
+table input[type="text"]{
+    width: 60%;
+    padding: 10px;
+}
+
+table input[type="button"]{
+    height: 40px;
+    width: 15%;
+
+}
+
+tr{
+    height: 50px;
+}
+
+.http-create-param{
+
+}
+
+#param-table{
+    margin: 10px;
+}
+
+table tr .delete-header{
+    width: 30%;
+    background-color: #C9302C;
+    color: #ffffff;
+}
+
+.http-create-param {
+    background-color: #EC971F;
+}
+.http-create-header{
+    background-color: #EC971F;
+}
+
+.http-bath-param{
+    background-color: #337AB7;
+}
+
+#response{
+    padding: 20px;
+    font-size: 20px;
+    margin: 10px;
+    width: 98%;
+    resize: none;
+}
+
+#request-body{
+    padding: 20px;
+    font-size: 15px;
+    margin: 10px;
+    width: 98%;
+    resize: none;
+}
