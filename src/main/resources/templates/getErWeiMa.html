@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>生成二维码</title>
@@ -13,49 +13,93 @@
     <script src="/js/request.js"></script>
 </head>
 <body>
-<br>
-<br>
-<br>
-<br>
-<form class="layui-form" action="" lay-filter="example">
-    <div class="layui-form-item">
-        <label class="layui-form-label">广告地址</label>
-        <div class="layui-input-block">
-            <input type="text" name="address" lay-verify="address" autocomplete="off" placeholder="请输入广告地址" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">广告名称</label>
-        <div class="layui-input-block">
-            <input type="text" name="name" lay-verify="name" autocomplete="off" placeholder="请输入广告名称" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">二维码生成地址</label>
-        <div class="layui-input-block">
-            <input type="text" name="fwaddress" lay-verify="fwaddress" autocomplete="off" placeholder="请输入二维码生成地址" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <div class="layui-input-block">
-            <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
-            <button type="download" class="layui-btn" lay-submit="" lay-filter="demo2">二维码下载</button>
-        </div>
-    </div>
+<style>
+    .layui-form-label{
+        width: auto;
+    }
+    .grid-demo{
+        padding-left: 30px;
+    }
+</style>
+<div class="layui-row">
 
-    <div class="site-demo-flow" id="LAY_demo3">
-        <img src="">
+    <div class="layui-col-md3">
+        &nbsp;
     </div>
-</form>
+    <div class="layui-col-md6">
+        <div class="grid-demo">
+            <div>
+                <br>
+                <br>
+                <p>(1)输入广告地址和广告名称，保证广告名称不重复，不要有特殊字符</p>
+                <p>(2)生成二维码成功后，会在二维码生成地址处生成二维码服务器地址，点击二维码下载，即可下载二维码</p>
+            </div>
+            <form class="layui-form" action="" lay-filter="example">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">广告地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="address" lay-verify="address"  autocomplete="off" placeholder="请输入广告地址" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">广告名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" lay-verify="name" autocomplete="off" placeholder="请输入广告名称" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">二维码地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="fwaddress" lay-verify="fwaddress" autocomplete="off" placeholder="请输入二维码生成地址" class="layui-input" disabled>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">生成二维码</button>
+                        <button type="button" class="layui-btn" lay-submit="" lay-filter="demo2">二维码下载</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div >
+            <div class="grid-demo grid-demo-bg1">
+                <table id="demandTable" class="layui-table" lay-filter="demandEvent" style="height: auto"></table>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md3">
+        &nbsp;
+    </div>
+</div>
+
 </body>
 </html>
-<script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
 
-    layui.use(['form', 'layedit', 'laydate'], function(){
+<script th:inline=none>
+    layui.use(['form','jquery','table','layer', 'layedit', 'laydate'], function(){
+        var $ = layui.jquery;
         var form = layui.form
             ,layer = layui.layer
             ,layedit = layui.layedit
-            ,laydate = layui.laydate;
+            ,laydate = layui.laydate
+            ,table = layui.table;
+
+        //自定义验证规则
+        form.verify({
+            address: function(value){
+                if(value.length < 1){
+                    return '地址不能为空呀';
+                }
+            }
+            ,name: function(value){
+                if(value.length < 1){
+                    return '名称不能为空呀';
+                }
+            }
+        });
 
         //监听提交
         form.on('submit(demo1)', function(data){
@@ -66,11 +110,11 @@
                     "ggname": data.field.name
                 },
                 success:function (data) {
-                    alert(data);
-                    alert("生成二维码成功！");
+                    alert("生成二维码成功");
                     form.val('example', {
                         "fwaddress": data // "name": "value"
                     });
+                    getTableData();
                 },
                 error:function () {
                     alert("生成二维码失败！");
@@ -78,16 +122,76 @@
             })
             return false;
         });
-
+        getTableData();
         //监听下载
-        form.on('submit(demo2)', function(data){
+        form.on('submit(demo2)', function(){
             var data = form.val('example');
             var path = data.fwaddress;
-            console.log(path);
-            path.replace("","%5C");
-            path.replace("/","%2F");
-            location.href = '/filedownload?path='+path;
+            path = path.replaceAll(/\\/,"%5C");
+            window.location.href = '/filedownload?path='+path;
             return false;
+        });
+        String.prototype.replaceAll = function(s1,s2){
+            return this.replace(new RegExp(s1,"gm"),s2);
+        }
+
+        function getTableData() {
+            //第一个实例
+            table.render({
+                id: 'id'
+                , elem: '#demandTable'
+                ,url: '/get_count' //数据接口
+                ,method: 'GET'
+                ,done: function (res, curr, count) {
+                        $("#demandTable").css("width", "100%");
+                }
+                ,where:{
+                }
+                ,page: true //开启分页
+                , toolbar: '#toolbarHead' //开启工具栏
+                ,cols: [[
+                    {field: 'index', title: '序号',  type: 'numbers'}
+                    , {field: 'name', title: '广告名字',width:200 }
+                    , {field: 'count', title: '访问量',width:100}
+                    , {field: 'url', title: '广告地址', align: 'center'}
+                    ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:100}
+                ]]
+                ,response: {
+                    statusName: 'code'
+                    ,statusCode: '200'
+                    ,msgName: 'msg'
+                    ,countName: 'total'
+                    ,dataName: 'data'
+                }
+            });
+        }
+
+        //监听工具条
+        table.on('tool(demandEvent)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            console.log(data)
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除行么', function(index){
+                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                    layer.close(index);
+                    //向服务端发送删除指令
+                    $.ajax({
+                        url:"/delete_url",
+                        data:{
+                            "uuid":data.id,
+                        },
+                        success:function (data) {
+                            alert("删除成功");
+                        },
+                        error:function () {
+                            alert("删除失败！");
+                        }
+                    })
+                });
+            }
         });
 
     })

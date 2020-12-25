@@ -66,14 +66,32 @@ public class ErWeiMa {
 
         BitMatrix bitMatrix = new MultiFormatWriter().encode(text,
                 BarcodeFormat.QR_CODE, width, height, hints);
+
+        bitMatrix = deleteWhite(bitMatrix);
         // 生成二维码
-        File outputFile = new File("D:" + File.separator +"page"+File.separator+ ggName+".jpg");
+        File outputFile = new File("opt" + File.separator +"page"+File.separator+ ggName+".jpg");
 
         if (!outputFile.exists()){
             outputFile.mkdirs();
         }
         MatrixToImageWriter.writeToFile(bitMatrix, format, outputFile);
         return  outputFile.getPath();
+    }
+
+    private static BitMatrix deleteWhite(BitMatrix matrix) {
+        int[] rec = matrix.getEnclosingRectangle();
+        int resWidth = rec[2] + 1;
+        int resHeight = rec[3] + 1;
+
+        BitMatrix resMatrix = new BitMatrix(resWidth, resHeight);
+        resMatrix.clear();
+        for (int i = 0; i < resWidth; i++) {
+            for (int j = 0; j < resHeight; j++) {
+                if (matrix.get(i + rec[0], j + rec[1]))
+                    resMatrix.set(i, j);
+            }
+        }
+        return resMatrix;
     }
 
 

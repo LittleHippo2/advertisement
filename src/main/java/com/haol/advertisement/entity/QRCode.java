@@ -1,6 +1,9 @@
 package com.haol.advertisement.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Data;
 
 /**
@@ -19,4 +22,10 @@ public class QRCode {
     private String url;
 
     private String path;
+
+    private int state;
+
+    @Version
+    @TableField(fill = FieldFill.INSERT)
+    private Integer version;
 }
